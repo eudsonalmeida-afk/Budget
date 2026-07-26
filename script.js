@@ -178,10 +178,10 @@ async function handleAuth(event) {
 function toggleAuthMode() {
   authMode = authMode === "signin" ? "signup" : "signin";
   const signup = authMode === "signup";
-  e.authTitle.textContent = signup ? "Criar sua conta" : "Entrar na sua conta";
+  e.authTitle.textContent = signup ? "Criar acesso ao Contaê" : "Acessar o Contaê";
   e.authDescription.textContent = signup
-    ? "Crie um acesso para sincronizar seus dados."
-    : "Acesse seus gastos em qualquer aparelho.";
+    ? "Crie seu acesso para sincronizar seus dados com segurança."
+    : "Seus gastos e salários sincronizados onde você estiver.";
   e.authSubmit.textContent = signup ? "Criar conta" : "Entrar";
   e.authModeToggle.textContent = signup ? "Já tenho uma conta" : "Ainda não tenho conta";
   e.authPassword.autocomplete = signup ? "new-password" : "current-password";

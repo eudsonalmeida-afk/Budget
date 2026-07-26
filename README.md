@@ -1,4 +1,4 @@
-# Meu Budget Feliz — Supabase
+# Contaê — Supabase
 
 Versão com login e sincronização em nuvem.
 
