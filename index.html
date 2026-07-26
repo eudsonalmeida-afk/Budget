@@ -8,10 +8,38 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app">
+<section id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">🌈</div>
+    <small>MEU BUDGET FELIZ</small>
+    <h1 id="authTitle">Entrar na sua conta</h1>
+    <p id="authDescription">Acesse seus gastos em qualquer aparelho.</p>
+
+    <form id="authForm">
+      <label>
+        <span>E-mail</span>
+        <input id="authEmail" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com">
+      </label>
+      <label>
+        <span>Senha</span>
+        <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres">
+      </label>
+      <button id="authSubmit" class="primary auth-submit" type="submit">Entrar</button>
+    </form>
+
+    <button id="authModeToggle" class="link auth-toggle" type="button">Ainda não tenho conta</button>
+    <p id="authMessage" class="auth-message" aria-live="polite"></p>
+  </div>
+</section>
+
+<div id="appRoot" class="app hidden">
   <header>
     <div><small>CONTROLE FINANCEIRO</small><h1>Meu Budget Feliz 🌈</h1><p>As contas continuam existindo, mas não precisam estragar seu humor.</p></div>
-    <button id="theme" class="icon">☀️</button>
+    <div class="header-actions">
+      <span id="syncStatus" class="sync-status">Conectando…</span>
+      <button id="logout" class="logout hidden">Sair</button>
+      <button id="theme" class="icon">☀️</button>
+    </div>
   </header>
 
   <nav class="month-nav">
@@ -105,6 +133,6 @@
 </dialog>
 
 <div id="toast"></div>
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
