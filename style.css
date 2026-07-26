@@ -1,0 +1,268 @@
+:root {
+  --bg: #fff8f2;
+  --panel: #ffffff;
+  --text: #3d2d2d;
+  --muted: #8b6f6f;
+  --border: #f0dede;
+  --shadow: 0 10px 30px rgba(180, 120, 120, 0.12);
+
+  --primary: #ff8fab;
+  --secondary: #ffd6a5;
+  --accent: #caffbf;
+  --lavender: #d8c4ff;
+  --blue-soft: #bde0fe;
+
+  --picpay: #63c76a;
+  --inter: #f4b860;
+  --bradesco: #ef8b8b;
+  --bb: #f1d36b;
+  --itau: #ff7f32;
+  --other: #9bb1ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at top left, #ffe5ec 0%, transparent 25%),
+    radial-gradient(circle at top right, #fff1c9 0%, transparent 25%),
+    radial-gradient(circle at bottom left, #d9f8c4 0%, transparent 25%),
+    var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.topbar p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.salary-box {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.salary-box input,
+.salary-box button,
+.expense-form input,
+.expense-form select,
+.add-btn,
+.ghost-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 1rem;
+}
+
+.salary-box input,
+.expense-form input,
+.expense-form select {
+  background: #fffafc;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.salary-box button,
+.add-btn {
+  background: linear-gradient(135deg, var(--primary), #ffb3c6);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 8px 18px rgba(255, 143, 171, 0.25);
+}
+
+.ghost-btn {
+  background: #fff;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  border-radius: 22px;
+  padding: 20px;
+  color: #503737;
+  box-shadow: var(--shadow);
+}
+
+.summary-card span {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  color: #6f5555;
+}
+
+.summary-card strong {
+  font-size: 1.7rem;
+}
+
+.summary-card.income {
+  background: linear-gradient(135deg, #d8f3dc, #b7efc5);
+}
+
+.summary-card.expenses {
+  background: linear-gradient(135deg, #ffe5d9, #ffd7ba);
+}
+
+.summary-card.balance {
+  background: linear-gradient(135deg, #cde7ff, #d9d7ff);
+}
+
+.expense-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #6d5656;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #5a4040;
+  background: #f8eeee;
+}
+
+.tab-btn.active {
+  outline: 3px solid rgba(0, 0, 0, 0.08);
+}
+
+.tab-btn.picpay { background: color-mix(in srgb, var(--picpay) 25%, white); }
+.tab-btn.inter { background: color-mix(in srgb, var(--inter) 35%, white); }
+.tab-btn.bradesco { background: color-mix(in srgb, var(--bradesco) 35%, white); }
+.tab-btn.bb { background: color-mix(in srgb, var(--bb) 45%, white); }
+.tab-btn.itau { background: color-mix(in srgb, var(--itau) 35%, white); }
+.tab-btn.other { background: color-mix(in srgb, var(--other) 35%, white); }
+
+.bank-summary {
+  margin-bottom: 12px;
+  color: #6c5858;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+thead {
+  background: #fff0f4;
+}
+
+th, td {
+  text-align: left;
+  padding: 14px 12px;
+  border-bottom: 1px solid #f4e3e3;
+}
+
+tbody tr:hover {
+  background: #fffafc;
+}
+
+.bank-pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.bank-picpay { background: color-mix(in srgb, var(--picpay) 25%, white); }
+.bank-inter { background: color-mix(in srgb, var(--inter) 35%, white); }
+.bank-bradesco { background: color-mix(in srgb, var(--bradesco) 35%, white); }
+.bank-bb { background: color-mix(in srgb, var(--bb) 45%, white); }
+.bank-itau { background: color-mix(in srgb, var(--itau) 35%, white); }
+.bank-other { background: color-mix(in srgb, var(--other) 35%, white); }
+
+.delete-btn {
+  border: none;
+  background: #ffd6de;
+  color: #7b2d40;
+  padding: 8px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expense-form {
+    grid-template-columns: 1fr;
+  }
+}

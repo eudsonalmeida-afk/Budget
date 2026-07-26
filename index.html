@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Budget Feliz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>💸Budget</h1>
+        <p>Organize suas contas sem deixar tudo tão pesado.</p>
+      </div>
+      <button id="resetDataBtn" class="ghost-btn">Limpar dados</button>
+    </header>
+
+    <main>
+      <section class="panel salary-panel">
+        <h2>Salário do mês</h2>
+        <div class="salary-box">
+          <input type="number" id="salaryInput" placeholder="Digite seu salário" step="0.01" />
+          <button id="saveSalaryBtn">Salvar salário</button>
+        </div>
+      </section>
+
+      <section class="summary-grid">
+        <div class="summary-card income">
+          <span>Salário</span>
+          <strong id="salaryDisplay">R$ 0,00</strong>
+        </div>
+        <div class="summary-card expenses">
+          <span>Gastos</span>
+          <strong id="expensesDisplay">R$ 0,00</strong>
+        </div>
+        <div class="summary-card balance">
+          <span>Saldo disponível</span>
+          <strong id="balanceDisplay">R$ 0,00</strong>
+        </div>
+      </section>
+
+      <section class="panel form-panel">
+        <h2>Lançar gasto diário</h2>
+        <form id="expenseForm" class="expense-form">
+          <div class="field">
+            <label for="description">Descrição</label>
+            <input type="text" id="description" placeholder="Ex: Mercado, Uber, lanche..." required />
+          </div>
+
+          <div class="field">
+            <label for="amount">Valor</label>
+            <input type="number" id="amount" placeholder="0,00" step="0.01" required />
+          </div>
+
+          <div class="field">
+            <label for="date">Data</label>
+            <input type="date" id="date" required />
+          </div>
+
+          <div class="field">
+            <label for="category">Categoria</label>
+            <select id="category" required>
+              <option value="">Selecione</option>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Casa">Casa</option>
+              <option value="Assinatura">Assinatura</option>
+              <option value="Lazer">Lazer</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Compras">Compras</option>
+              <option value="Reforma do quarto">Reforma do quarto</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="bank">Banco / Cartão</label>
+            <select id="bank" required>
+              <option value="">Selecione</option>
+              <option value="PicPay">PicPay</option>
+              <option value="Inter">Inter</option>
+              <option value="Bradesco">Bradesco</option>
+              <option value="Banco do Brasil">Banco do Brasil</option>
+              <option value="Itaú">Itaú</option>
+              <option value="Dinheiro / Débito">Dinheiro / Débito</option>
+            </select>
+          </div>
+
+          <div class="field field-full">
+            <label for="notes">Observações</label>
+            <input type="text" id="notes" placeholder="Opcional" />
+          </div>
+
+          <div class="field field-full">
+            <button type="submit" class="add-btn">Adicionar gasto</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel tabs-panel">
+        <h2>Despesas por banco/cartão</h2>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="Todos">Todos</button>
+          <button class="tab-btn picpay" data-tab="PicPay">PicPay</button>
+          <button class="tab-btn inter" data-tab="Inter">Inter</button>
+          <button class="tab-btn bradesco" data-tab="Bradesco">Bradesco</button>
+          <button class="tab-btn bb" data-tab="Banco do Brasil">Banco do Brasil</button>
+          <button class="tab-btn itau" data-tab="Itaú">Itaú</button>
+          <button class="tab-btn other" data-tab="Dinheiro / Débito">Dinheiro / Débito</button>
+        </div>
+
+        <div class="bank-summary" id="bankSummary">
+          <p>Total da aba: <strong id="tabTotal">R$ 0,00</strong></p>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Banco</th>
+                <th>Valor</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody">
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
