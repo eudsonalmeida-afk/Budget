@@ -6,3 +6,96 @@
 
 /* Abas e parcelamentos */
 .app-tabs{position:sticky;top:8px;z-index:8;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:20px 0;padding:7px;border:1px solid var(--border);border-radius:20px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:var(--shadow);backdrop-filter:blur(14px)}.app-tabs button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;border:0;border-radius:14px;background:transparent;color:var(--muted);font-weight:900;cursor:pointer}.app-tabs button.active{background:linear-gradient(135deg,#ffe1ea,#fff0d5);color:#5c3744;box-shadow:0 8px 20px #80546318}.tab-page{display:none}.tab-page.active{display:block;animation:tabIn .18s ease}@keyframes tabIn{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:none}}.purchase-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0;padding:6px;border-radius:16px;background:var(--bg)}.purchase-mode button{min-height:42px;border:0;border-radius:12px;background:transparent;color:var(--muted);font-weight:900}.purchase-mode button.active{background:var(--surface);color:var(--text);box-shadow:0 6px 18px #80546318}.installment-details{display:grid;grid-template-columns:2fr 1fr 1fr;gap:11px;margin:10px 0 20px;padding:16px;border:1px dashed var(--border);border-radius:18px;background:var(--bg)}.installment-details label span{display:block;margin-bottom:6px;font-size:.75rem;font-weight:900;color:var(--muted)}.installment-details input{width:100%;min-height:45px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text)}.field-help{display:block;margin-top:7px;color:var(--muted)}.compact{min-height:42px;padding:9px 13px}.installment-month-summary{display:flex;justify-content:space-between;gap:16px;margin:18px 0;padding:14px 16px;border-radius:16px;background:var(--bg);color:var(--muted)}.installment-month-summary strong{color:var(--text)}.installment-list{display:grid;gap:11px}.installment-card{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(130px,.7fr) auto;gap:15px;align-items:center;padding:16px;border:1px solid var(--border);border-radius:18px;background:var(--surface)}.installment-card h3{margin:0 0 5px}.installment-card p{margin:0;color:var(--muted);font-size:.78rem}.installment-progress{height:8px;margin-top:10px;border-radius:999px;background:var(--bg);overflow:hidden}.installment-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--pink),#ff9d79)}.installment-numbers{text-align:right}.installment-numbers strong,.installment-numbers small{display:block}.installment-numbers small{margin-top:4px;color:var(--muted)}.installment-actions{display:flex;gap:7px}.installment-actions button{border:0;border-radius:11px;padding:9px;background:#ffe4e8;cursor:pointer}.installment-due{display:inline-block;margin-top:7px;padding:5px 8px;border-radius:999px;background:#e2e8ff;color:#4259ad;font-size:.7rem;font-weight:900}.installment-finished{background:#dcf7e1;color:#247f37}.expense.installment-entry{border-style:dashed}.expense.installment-entry .info b:after{content:" PARCELA";margin-left:6px;padding:3px 6px;border-radius:999px;background:#e2e8ff;color:#4259ad;font-size:.55rem;vertical-align:middle}.auth-screen.hidden,.app.hidden,.account-menu.hidden{display:none!important}@media(max-width:720px){.app-tabs{grid-template-columns:repeat(4,minmax(72px,1fr));overflow-x:auto}.app-tabs button{flex-direction:column;gap:2px;font-size:.7rem}.installment-details{grid-template-columns:1fr}.installment-card{grid-template-columns:1fr auto}.installment-numbers{text-align:left}.installment-actions{grid-column:2;grid-row:1/3}}
+/* Ajuste de contraste dos botões: coloridos no tema claro e brancos no escuro */
+body:not(.dark) .icon,
+body:not(.dark) .month-nav button,
+body:not(.dark) .account-menu-button,
+body:not(.dark) .secondary,
+body:not(.dark) .close,
+body:not(.dark) .chips button:not(.picpay):not(.inter):not(.bradesco):not(.bb):not(.itau):not(.cash),
+body:not(.dark) .purchase-mode button,
+body:not(.dark) .app-tabs button:not(.active) {
+  background: linear-gradient(135deg,#ffe1ea,#fff0d5);
+  color:#5c3744;
+  border-color:#efcbd5;
+}
+
+body:not(.dark) .purchase-mode button.active,
+body:not(.dark) .app-tabs button.active {
+  background: linear-gradient(135deg,#ffb9cd,#ffd39a);
+  color:#4a2d37;
+}
+
+body.dark .icon,
+body.dark .month-nav button,
+body.dark .account-menu-button,
+body.dark .secondary,
+body.dark .close,
+body.dark .chips button:not(.picpay):not(.inter):not(.bradesco):not(.bb):not(.itau):not(.cash),
+body.dark .purchase-mode button,
+body.dark .app-tabs button {
+  background:#fff;
+  color:#382c35;
+  border-color:#fff;
+}
+
+body.dark .purchase-mode button.active,
+body.dark .app-tabs button.active {
+  background:#ffe1ea;
+  color:#5c3744;
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+}
+
+body.dark .primary {
+  background:#fff;
+  color:#382c35;
+  box-shadow:0 10px 24px rgba(0,0,0,.2);
+}
+
+body.dark .danger {
+  background:#fff;
+  color:#b62f4c;
+}
+
+
+/* Correção da navegação por abas no mobile */
+.app-tabs {
+  isolation: isolate;
+}
+
+.app-tabs button {
+  position: relative;
+  z-index: 1;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  pointer-events: auto;
+}
+
+@media (max-width: 720px) {
+  .app-tabs {
+    position: sticky;
+    top: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    width: 100%;
+    overflow: visible;
+    padding: 7px;
+  }
+
+  .app-tabs button {
+    min-width: 0;
+    min-height: 52px;
+    flex-direction: row;
+    gap: 6px;
+    padding: 9px 7px;
+    font-size: .76rem;
+    line-height: 1.15;
+  }
+
+  .app-tabs button span {
+    flex: 0 0 auto;
+    font-size: 1rem;
+  }
+}
