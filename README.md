@@ -33,3 +33,7 @@ A publishable key pode ficar no navegador. Nunca publique a senha do banco, a se
 ## Migração
 
 Dados da versão anterior, armazenados em localStorage, não são enviados automaticamente para a nuvem.
+
+
+## Sessão persistente
+A versão atual usa `persistSession`, `autoRefreshToken` e `localStorage`. Por padrão, a sessão do Supabase permanece ativa até o usuário escolher sair, salvo se houver limites de sessão configurados no painel do projeto.

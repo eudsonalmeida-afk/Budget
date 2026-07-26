@@ -9,7 +9,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    storage: window.localStorage
   }
 });
 
@@ -41,6 +42,8 @@ const e = {
   authEmail: $("authEmail"), authPassword: $("authPassword"),
   authSubmit: $("authSubmit"), authModeToggle: $("authModeToggle"), authMessage: $("authMessage"),
   logout: $("logout"), syncStatus: $("syncStatus"),
+  accountMenu: $("accountMenu"), accountMenuButton: $("accountMenuButton"),
+  accountMenuPanel: $("accountMenuPanel"), accountEmail: $("accountEmail"),
   prev: $("prev"), next: $("next"), monthBtn: $("monthBtn"), monthPicker: $("monthPicker"),
   monthLabel: $("monthLabel"), salaryOut: $("salaryOut"), spentOut: $("spentOut"),
   balanceOut: $("balanceOut"), balanceMsg: $("balanceMsg"), salaryEdit: $("salaryEdit"),
@@ -120,7 +123,11 @@ function setSync(text, state = "") {
 function showAuth(message = "", state = "") {
   e.authScreen.classList.remove("hidden");
   e.appRoot.classList.add("hidden");
-  e.logout.classList.add("hidden");
+  e.accountMenu.classList.add("hidden");
+  e.accountMenuPanel.classList.add("hidden");
+  e.accountMenuButton.setAttribute("aria-expanded", "false");
+  e.authSubmit.textContent = authMode === "signin" ? "Entrar" : "Criar conta";
+  e.authSubmit.disabled = false;
   e.authMessage.textContent = message;
   e.authMessage.className = `auth-message ${state}`.trim();
 }
@@ -128,7 +135,12 @@ function showAuth(message = "", state = "") {
 function showApp() {
   e.authScreen.classList.add("hidden");
   e.appRoot.classList.remove("hidden");
-  e.logout.classList.remove("hidden");
+  e.accountMenu.classList.remove("hidden");
+  e.accountEmail.textContent = currentUser?.email || "Conta conectada";
+  e.authMessage.textContent = "";
+  e.authSubmit.textContent = authMode === "signin" ? "Entrar" : "Criar conta";
+  e.authSubmit.disabled = false;
+  window.scrollTo({ top: 0, behavior: "instant" });
 }
 
 function friendlyAuthError(message) {
@@ -149,11 +161,15 @@ async function handleAuth(event) {
 
   try {
     if (authMode === "signin") {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: e.authEmail.value.trim(),
         password: e.authPassword.value
       });
       if (error) throw error;
+      if (!data.session?.user) throw new Error("A sessão não foi iniciada.");
+      currentUser = data.session.user;
+      showApp();
+      await loadMonth();
     } else {
       const { data, error } = await supabase.auth.signUp({
         email: e.authEmail.value.trim(),
@@ -470,8 +486,24 @@ function exportCsv() {
 
 e.authForm.addEventListener("submit", handleAuth);
 e.authModeToggle.addEventListener("click", toggleAuthMode);
+e.accountMenuButton.addEventListener("click", () => {
+  const opening = e.accountMenuPanel.classList.contains("hidden");
+  e.accountMenuPanel.classList.toggle("hidden", !opening);
+  e.accountMenuButton.setAttribute("aria-expanded", String(opening));
+});
+
+document.addEventListener("click", event => {
+  if (!e.accountMenu.contains(event.target)) {
+    e.accountMenuPanel.classList.add("hidden");
+    e.accountMenuButton.setAttribute("aria-expanded", "false");
+  }
+});
+
 e.logout.addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  e.accountMenuPanel.classList.add("hidden");
+  setSync("Saindo…");
+  const { error } = await supabase.auth.signOut({ scope: "local" });
+  if (error) toast("Não foi possível sair da conta.");
 });
 
 e.prev.addEventListener("click", () => changeMonth(-1));
@@ -546,20 +578,30 @@ if (localStorage.getItem(THEME_KEY) === "dark") {
   e.theme.textContent = "🌙";
 }
 
-supabase.auth.onAuthStateChange(async (_event, session) => {
+supabase.auth.onAuthStateChange((event, session) => {
   currentUser = session?.user || null;
+
   if (currentUser) {
     showApp();
-    await loadMonth();
-  } else {
+    if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+      setTimeout(() => loadMonth(), 0);
+    } else if (event === "TOKEN_REFRESHED") {
+      setSync("Sincronizado", "ok");
+    }
+    return;
+  }
+
+  if (event === "SIGNED_OUT") {
     monthData = { salary: 0, expenses: [] };
     showAuth();
     setSync("Desconectado");
   }
 });
 
-const { data: { session } } = await supabase.auth.getSession();
-currentUser = session?.user || null;
+const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+if (sessionError) console.error(sessionError);
+currentUser = sessionData.session?.user || null;
+
 if (currentUser) {
   showApp();
   await loadMonth();

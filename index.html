@@ -37,8 +37,15 @@
     <div><small>CONTROLE FINANCEIRO</small><h1>Contaê</h1><p>Seu dinheiro em dia, sem complicação.</p></div>
     <div class="header-actions">
       <span id="syncStatus" class="sync-status">Conectando…</span>
-      <button id="logout" class="logout hidden">Sair</button>
-      <button id="theme" class="icon">☀️</button>
+      <div id="accountMenu" class="account-menu hidden">
+        <button id="accountMenuButton" class="account-menu-button" type="button" aria-expanded="false">Conta ▾</button>
+        <div id="accountMenuPanel" class="account-menu-panel hidden">
+          <small>CONTA CONECTADA</small>
+          <strong id="accountEmail"></strong>
+          <button id="logout" class="logout" type="button">Sair da conta</button>
+        </div>
+      </div>
+      <button id="theme" class="icon" type="button">☀️</button>
     </div>
   </header>
 
