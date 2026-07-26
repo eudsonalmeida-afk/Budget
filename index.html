@@ -10,23 +10,14 @@
 <body>
 <section id="authScreen" class="auth-screen">
   <div class="auth-card">
-    <div class="auth-logo">✦</div>
-    <small>CONTAÊ</small>
+    <div class="auth-logo">✦</div><small>CONTAÊ</small>
     <h1 id="authTitle">Acessar o Contaê</h1>
     <p id="authDescription">Seus gastos e salários sincronizados onde você estiver.</p>
-
     <form id="authForm">
-      <label>
-        <span>E-mail</span>
-        <input id="authEmail" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com">
-      </label>
-      <label>
-        <span>Senha</span>
-        <input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres">
-      </label>
+      <label><span>E-mail</span><input id="authEmail" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com"></label>
+      <label><span>Senha</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres"></label>
       <button id="authSubmit" class="primary auth-submit" type="submit">Entrar</button>
     </form>
-
     <button id="authModeToggle" class="link auth-toggle" type="button">Ainda não tenho conta</button>
     <p id="authMessage" class="auth-message" aria-live="polite"></p>
   </div>
@@ -39,107 +30,88 @@
       <span id="syncStatus" class="sync-status">Conectando…</span>
       <div id="accountMenu" class="account-menu hidden">
         <button id="accountMenuButton" class="account-menu-button" type="button" aria-expanded="false">Conta ▾</button>
-        <div id="accountMenuPanel" class="account-menu-panel hidden">
-          <small>CONTA CONECTADA</small>
-          <strong id="accountEmail"></strong>
-          <button id="logout" class="logout" type="button">Sair da conta</button>
-        </div>
+        <div id="accountMenuPanel" class="account-menu-panel hidden"><small>CONTA CONECTADA</small><strong id="accountEmail"></strong><button id="logout" class="logout" type="button">Sair da conta</button></div>
       </div>
       <button id="theme" class="icon" type="button">☀️</button>
     </div>
   </header>
 
   <nav class="month-nav">
-    <button id="prev">‹</button>
-    <button id="monthBtn"><b id="monthLabel"></b><span>Escolher mês</span></button>
-    <button id="next">›</button>
+    <button id="prev" type="button">‹</button>
+    <button id="monthBtn" type="button"><b id="monthLabel"></b><span>Escolher mês</span></button>
+    <button id="next" type="button">›</button>
     <input id="monthPicker" type="month">
   </nav>
 
   <main>
     <section class="summary">
-      <article class="salary"><span>💰</span><div><small>Salário do mês</small><strong id="salaryOut">R$ 0,00</strong></div><button id="salaryEdit">Editar</button></article>
+      <article class="salary"><span>💰</span><div><small>Salário do mês</small><strong id="salaryOut">R$ 0,00</strong></div><button id="salaryEdit" type="button">Editar</button></article>
       <article class="spent"><span>🛍️</span><div><small>Gastos do mês</small><strong id="spentOut">R$ 0,00</strong></div></article>
       <article class="balance"><span>✨</span><div><small>Saldo disponível</small><strong id="balanceOut">R$ 0,00</strong><em id="balanceMsg"></em></div></article>
     </section>
 
-    <section class="panel">
-      <div class="title"><div><small>LANÇAMENTO RÁPIDO</small><h2>Registrar um gasto</h2></div><b id="today"></b></div>
+    <nav id="appTabs" class="app-tabs" aria-label="Seções do aplicativo">
+      <button class="active" data-tab="launch" type="button"><span>＋</span>Lançamento</button>
+      <button data-tab="cards" type="button"><span>💳</span>Cartões</button>
+      <button data-tab="installments" type="button"><span>🧾</span>Parcelamentos</button>
+      <button data-tab="expenses" type="button"><span>📋</span>Gastos do mês</button>
+    </nav>
 
-      <div class="step"><h3><i>1</i> O que foi?</h3>
-        <div id="categories" class="chips">
-          <button data-category="Alimentação">🍔 Alimentação</button>
-          <button data-category="Transporte">🚗 Transporte</button>
-          <button data-category="Casa">🏠 Casa</button>
-          <button data-category="Lazer">🎮 Lazer</button>
-          <button data-category="Saúde">💊 Saúde</button>
-          <button data-category="Compras">🛒 Compras</button>
-          <button data-category="Assinatura">📱 Assinatura</button>
-          <button data-category="Reforma do quarto">🛠️ Reforma</button>
-          <button data-category="Outros">✨ Outros</button>
+    <section id="tab-launch" class="tab-page active">
+      <section class="panel">
+        <div class="title"><div><small>LANÇAMENTO RÁPIDO</small><h2>Registrar um gasto</h2></div><b id="today"></b></div>
+        <div class="purchase-mode" id="purchaseMode">
+          <button class="active" data-mode="single" type="button">Compra à vista</button>
+          <button data-mode="installment" type="button">Compra parcelada</button>
         </div>
-      </div>
 
-      <div class="step"><h3><i>2</i> Como você pagou?</h3>
-        <div id="banks" class="chips banks">
-          <button class="picpay" data-bank="PicPay">PicPay</button>
-          <button class="inter" data-bank="Inter">Inter</button>
-          <button class="bradesco" data-bank="Bradesco">Bradesco</button>
-          <button class="bb" data-bank="Banco do Brasil">Banco do Brasil</button>
-          <button class="itau" data-bank="Itaú">Itaú</button>
-          <button class="cash" data-bank="Dinheiro / Débito">Débito/Dinheiro</button>
+        <div id="installmentDetails" class="installment-details hidden">
+          <label><span>Nome da compra</span><input id="purchaseName" maxlength="70" placeholder="Ex.: notebook, tênis, passagem"></label>
+          <label><span>Quantidade de parcelas</span><input id="installmentCount" type="number" min="2" max="120" inputmode="numeric" placeholder="Ex.: 10"></label>
+          <label><span>Primeira parcela</span><input id="installmentStart" type="month"></label>
         </div>
-      </div>
 
-      <div class="step"><h3><i>3</i> Quanto foi?</h3>
-        <div class="amount">
-          <label><span>R$</span><input id="amount" inputmode="decimal" placeholder="0,00"></label>
-          <button id="add" class="primary">Adicionar gasto ＋</button>
+        <div class="step"><h3><i>1</i> O que foi?</h3><div id="categories" class="chips">
+          <button data-category="Alimentação">🍔 Alimentação</button><button data-category="Transporte">🚗 Transporte</button><button data-category="Casa">🏠 Casa</button><button data-category="Lazer">🎮 Lazer</button><button data-category="Saúde">💊 Saúde</button><button data-category="Compras">🛒 Compras</button><button data-category="Assinatura">📱 Assinatura</button><button data-category="Reforma do quarto">🛠️ Reforma</button><button data-category="Outros">✨ Outros</button>
+        </div></div>
+
+        <div class="step"><h3><i>2</i> Como você pagou?</h3><div id="banks" class="chips banks">
+          <button class="picpay" data-bank="PicPay">PicPay</button><button class="inter" data-bank="Inter">Inter</button><button class="bradesco" data-bank="Bradesco">Bradesco</button><button class="bb" data-bank="Banco do Brasil">Banco do Brasil</button><button class="itau" data-bank="Itaú">Itaú</button><button class="cash" data-bank="Dinheiro / Débito">Débito/Dinheiro</button>
+        </div></div>
+
+        <div class="step"><h3><i>3</i> <span id="amountQuestion">Quanto foi?</span></h3>
+          <div class="amount"><label><span>R$</span><input id="amount" inputmode="decimal" placeholder="0,00"></label><button id="add" class="primary" type="button">Adicionar gasto ＋</button></div>
+          <small id="amountHelp" class="field-help">Informe o valor total deste gasto.</small>
+          <button id="noteToggle" class="link" type="button">+ Adicionar observação</button><input id="note" class="note hidden" maxlength="80" placeholder="Observação opcional">
         </div>
-        <button id="noteToggle" class="link">+ Adicionar observação</button>
-        <input id="note" class="note hidden" maxlength="80" placeholder="Ex.: supermercado, Uber, camisa...">
-      </div>
-
-      <div id="preview" class="preview">Selecione categoria, forma de pagamento e valor.</div>
+        <div id="preview" class="preview">Selecione categoria, forma de pagamento e valor.</div>
+      </section>
     </section>
 
-    <section class="panel">
-      <div class="title"><div><small>RESUMO DOS CARTÕES</small><h2>Quanto já foi em cada lugar?</h2></div></div>
-      <div id="bankTotals" class="bank-totals"></div>
+    <section id="tab-cards" class="tab-page">
+      <section class="panel"><div class="title"><div><small>RESUMO DOS CARTÕES</small><h2>Quanto já foi em cada lugar?</h2></div></div><div id="bankTotals" class="bank-totals"></div></section>
     </section>
 
-    <section class="panel">
-      <div class="title"><div><small>GASTOS DO MÊS</small><h2>Lista de lançamentos</h2></div><button id="export" class="secondary">Exportar CSV</button></div>
-      <div id="filters" class="filters">
-        <button class="active" data-filter="Todos">Todos</button>
-        <button class="picpay" data-filter="PicPay">PicPay</button>
-        <button class="inter" data-filter="Inter">Inter</button>
-        <button class="bradesco" data-filter="Bradesco">Bradesco</button>
-        <button class="bb" data-filter="Banco do Brasil">Banco do Brasil</button>
-        <button class="itau" data-filter="Itaú">Itaú</button>
-        <button class="cash" data-filter="Dinheiro / Débito">Débito</button>
-      </div>
-      <div class="list-head"><span id="count"></span><strong id="filteredTotal"></strong></div>
-      <div id="list" class="list"></div>
+    <section id="tab-installments" class="tab-page">
+      <section class="panel">
+        <div class="title"><div><small>COMPRAS PARCELADAS</small><h2>Parcelamentos ativos</h2></div><button id="newInstallment" class="primary compact" type="button">Nova compra ＋</button></div>
+        <div class="installment-month-summary"><span>Parcelas descontadas em <b id="installmentSummaryMonth"></b></span><strong id="installmentMonthTotal">R$ 0,00</strong></div>
+        <div id="installmentList" class="installment-list"></div>
+      </section>
+    </section>
+
+    <section id="tab-expenses" class="tab-page">
+      <section class="panel">
+        <div class="title"><div><small>GASTOS DO MÊS</small><h2>Lista de lançamentos</h2></div><button id="export" class="secondary" type="button">Exportar CSV</button></div>
+        <div id="filters" class="filters"><button class="active" data-filter="Todos">Todos</button><button class="picpay" data-filter="PicPay">PicPay</button><button class="inter" data-filter="Inter">Inter</button><button class="bradesco" data-filter="Bradesco">Bradesco</button><button class="bb" data-filter="Banco do Brasil">Banco do Brasil</button><button class="itau" data-filter="Itaú">Itaú</button><button class="cash" data-filter="Dinheiro / Débito">Débito</button></div>
+        <div class="list-head"><span id="count"></span><strong id="filteredTotal"></strong></div><div id="list" class="list"></div>
+      </section>
     </section>
   </main>
 </div>
 
-<dialog id="salaryDialog">
-  <form id="salaryForm">
-    <button type="button" id="salaryClose" class="close">×</button>
-    <div class="dialog-icon">💰</div><h2>Salário do mês</h2><p id="salaryMonth"></p>
-    <label class="money"><span>R$</span><input id="salaryInput" inputmode="decimal" placeholder="0,00"></label>
-    <div class="actions"><button type="button" id="salaryCancel" class="secondary">Cancelar</button><button class="primary">Salvar</button></div>
-  </form>
-</dialog>
-
-<dialog id="deleteDialog">
-  <div class="dialog-icon">🗑️</div><h2>Excluir este gasto?</h2><p>O valor voltará ao saldo do mês.</p>
-  <div class="actions"><button id="deleteCancel" class="secondary">Cancelar</button><button id="deleteConfirm" class="danger">Excluir</button></div>
-</dialog>
-
+<dialog id="salaryDialog"><form id="salaryForm"><button type="button" id="salaryClose" class="close">×</button><div class="dialog-icon">💰</div><h2>Salário do mês</h2><p id="salaryMonth"></p><label class="money"><span>R$</span><input id="salaryInput" inputmode="decimal" placeholder="0,00"></label><div class="actions"><button type="button" id="salaryCancel" class="secondary">Cancelar</button><button class="primary">Salvar</button></div></form></dialog>
+<dialog id="deleteDialog"><div class="dialog-icon">🗑️</div><h2 id="deleteTitle">Excluir este gasto?</h2><p id="deleteMessage">O valor voltará ao saldo do mês.</p><div class="actions"><button id="deleteCancel" class="secondary">Cancelar</button><button id="deleteConfirm" class="danger">Excluir</button></div></dialog>
 <div id="toast"></div>
 <script type="module" src="script.js"></script>
-</body>
-</html>
+</body></html>
