@@ -1,178 +1,37 @@
-const salaryInput = document.getElementById("salaryInput");
-const saveSalaryBtn = document.getElementById("saveSalaryBtn");
-const salaryDisplay = document.getElementById("salaryDisplay");
-const expensesDisplay = document.getElementById("expensesDisplay");
-const balanceDisplay = document.getElementById("balanceDisplay");
-const expenseForm = document.getElementById("expenseForm");
-const expensesTableBody = document.getElementById("expensesTableBody");
-const resetDataBtn = document.getElementById("resetDataBtn");
-const tabButtons = document.querySelectorAll(".tab-btn");
-const tabTotal = document.getElementById("tabTotal");
-
-let selectedTab = "Todos";
-
-let salary = Number(localStorage.getItem("budget_salary")) || 0;
-let expenses = JSON.parse(localStorage.getItem("budget_expenses")) || [];
-
-function formatCurrency(value) {
-  return value.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
-}
-
-function saveData() {
-  localStorage.setItem("budget_salary", salary);
-  localStorage.setItem("budget_expenses", JSON.stringify(expenses));
-}
-
-function getTotalExpenses(list = expenses) {
-  return list.reduce((sum, item) => sum + Number(item.amount), 0);
-}
-
-function updateSummary() {
-  const totalExpenses = getTotalExpenses();
-  const balance = salary - totalExpenses;
-
-  salaryDisplay.textContent = formatCurrency(salary);
-  expensesDisplay.textContent = formatCurrency(totalExpenses);
-  balanceDisplay.textContent = formatCurrency(balance);
-}
-
-function bankClass(bank) {
-  switch (bank) {
-    case "PicPay":
-      return "bank-picpay";
-    case "Inter":
-      return "bank-inter";
-    case "Bradesco":
-      return "bank-bradesco";
-    case "Banco do Brasil":
-      return "bank-bb";
-    case "Itaú":
-      return "bank-itau";
-    default:
-      return "bank-other";
-  }
-}
-
-function renderExpenses() {
-  expensesTableBody.innerHTML = "";
-
-  let filteredExpenses = expenses;
-
-  if (selectedTab !== "Todos") {
-    filteredExpenses = expenses.filter(item => item.bank === selectedTab);
-  }
-
-  filteredExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  if (filteredExpenses.length === 0) {
-    expensesTableBody.innerHTML = `
-      <tr>
-        <td colspan="6">Nenhum gasto encontrado nesta aba.</td>
-      </tr>
-    `;
-  } else {
-    filteredExpenses.forEach((expense) => {
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${formatDate(expense.date)}</td>
-        <td>${expense.description}</td>
-        <td>${expense.category}</td>
-        <td>
-          <span class="bank-pill ${bankClass(expense.bank)}">${expense.bank}</span>
-        </td>
-        <td>${formatCurrency(Number(expense.amount))}</td>
-        <td>
-          <button class="delete-btn" onclick="deleteExpense('${expense.id}')">Excluir</button>
-        </td>
-      `;
-
-      expensesTableBody.appendChild(row);
-    });
-  }
-
-  const totalTab = getTotalExpenses(filteredExpenses);
-  tabTotal.textContent = formatCurrency(totalTab);
-}
-
-function formatDate(dateString) {
-  const [year, month, day] = dateString.split("-");
-  return `${day}/${month}/${year}`;
-}
-
-saveSalaryBtn.addEventListener("click", () => {
-  salary = Number(salaryInput.value) || 0;
-  saveData();
-  updateSummary();
-  salaryInput.value = "";
-});
-
-expenseForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const description = document.getElementById("description").value.trim();
-  const amount = Number(document.getElementById("amount").value);
-  const date = document.getElementById("date").value;
-  const category = document.getElementById("category").value;
-  const bank = document.getElementById("bank").value;
-  const notes = document.getElementById("notes").value.trim();
-
-  if (!description || !amount || !date || !category || !bank) {
-    alert("Preencha os campos obrigatórios.");
-    return;
-  }
-
-  const newExpense = {
-    id: crypto.randomUUID(),
-    description,
-    amount,
-    date,
-    category,
-    bank,
-    notes
-  };
-
-  expenses.push(newExpense);
-  saveData();
-  updateSummary();
-  renderExpenses();
-  expenseForm.reset();
-});
-
-function deleteExpense(id) {
-  const confirmed = confirm("Deseja realmente excluir este gasto?");
-  if (!confirmed) return;
-
-  expenses = expenses.filter(item => item.id !== id);
-  saveData();
-  updateSummary();
-  renderExpenses();
-}
-
-tabButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    tabButtons.forEach(btn => btn.classList.remove("active"));
-    button.classList.add("active");
-    selectedTab = button.dataset.tab;
-    renderExpenses();
-  });
-});
-
-resetDataBtn.addEventListener("click", () => {
-  const confirmed = confirm("Isso vai apagar salário e despesas salvas. Deseja continuar?");
-  if (!confirmed) return;
-
-  localStorage.removeItem("budget_salary");
-  localStorage.removeItem("budget_expenses");
-
-  salary = 0;
-  expenses = [];
-  updateSummary();
-  renderExpenses();
-});
-
-updateSummary();
-renderExpenses();
+(()=>{"use strict";
+const K="budget_feliz_v2",TK="budget_feliz_theme";
+const banks=[["PicPay","picpay"],["Inter","inter"],["Bradesco","bradesco"],["Banco do Brasil","bb"],["Itaú","itau"],["Dinheiro / Débito","cash"]];
+const emoji={"Alimentação":"🍔","Transporte":"🚗","Casa":"🏠","Lazer":"🎮","Saúde":"💊","Compras":"🛒","Assinatura":"📱","Reforma do quarto":"🛠️","Outros":"✨"};
+const $=id=>document.getElementById(id), e={prev:$("prev"),next:$("next"),monthBtn:$("monthBtn"),monthPicker:$("monthPicker"),monthLabel:$("monthLabel"),salaryOut:$("salaryOut"),spentOut:$("spentOut"),balanceOut:$("balanceOut"),balanceMsg:$("balanceMsg"),salaryEdit:$("salaryEdit"),categories:$("categories"),banks:$("banks"),amount:$("amount"),add:$("add"),noteToggle:$("noteToggle"),note:$("note"),preview:$("preview"),today:$("today"),bankTotals:$("bankTotals"),filters:$("filters"),count:$("count"),filteredTotal:$("filteredTotal"),list:$("list"),export:$("export"),salaryDialog:$("salaryDialog"),salaryForm:$("salaryForm"),salaryInput:$("salaryInput"),salaryMonth:$("salaryMonth"),salaryClose:$("salaryClose"),salaryCancel:$("salaryCancel"),deleteDialog:$("deleteDialog"),deleteCancel:$("deleteCancel"),deleteConfirm:$("deleteConfirm"),theme:$("theme"),toast:$("toast")};
+let data=load(),month=monthKey(new Date()),cat="",bank="",filter="Todos",pending=null,timer;
+function load(){try{const x=JSON.parse(localStorage.getItem(K));if(x?.months)return x}catch{}return{months:{}}}
+function save(){localStorage.setItem(K,JSON.stringify(data))}
+function ensure(){return data.months[month]??=( {salary:0,expenses:[]} )}
+function monthKey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")}
+function monthDate(k){const[y,m]=k.split("-").map(Number);return new Date(y,m-1,1,12)}
+function monthName(k){return new Intl.DateTimeFormat("pt-BR",{month:"long",year:"numeric"}).format(monthDate(k))}
+function money(v){return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(Number(v)||0)}
+function parseMoney(v){if(!v)return 0;return Number(String(v).replace(/\./g,"").replace(",",".").replace(/[^\d.-]/g,""))||0}
+function mask(v){const d=v.replace(/\D/g,"");return d?(Number(d)/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""}
+function todayIso(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+function bankClass(n){return banks.find(x=>x[0]===n)?.[1]||"cash"}
+function total(list=ensure().expenses){return list.reduce((s,x)=>s+Number(x.amount),0)}
+function render(){e.monthLabel.textContent=monthName(month);e.monthPicker.value=month;e.today.textContent=month===monthKey(new Date())?"Hoje • "+new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"short"}).format(new Date()):"Mês selecionado";const m=ensure(),t=total(),b=m.salary-t;e.salaryOut.textContent=money(m.salary);e.spentOut.textContent=money(t);e.balanceOut.textContent=money(b);e.balanceOut.style.color=b<0?"#c43c58":"";e.balanceMsg.textContent=m.salary<=0?"Cadastre o salário deste mês.":b<0?"O orçamento passou do limite.":t?Math.min(100,t/m.salary*100).toFixed(0)+"% do salário utilizado.":"Nenhum gasto registrado.";renderBanks();renderList();preview()}
+function renderBanks(){const x=ensure().expenses;e.bankTotals.innerHTML=banks.map(([n,c])=>{const a=x.filter(v=>v.bank===n);return `<article class="bank-card ${c}"><span>${n}</span><strong>${money(total(a))}</strong><small>${a.length} ${a.length===1?"gasto":"gastos"}</small></article>`}).join("")}
+function renderList(){let a=[...ensure().expenses];if(filter!=="Todos")a=a.filter(x=>x.bank===filter);a.sort((x,y)=>y.date.localeCompare(x.date)||(y.createdAt||"").localeCompare(x.createdAt||""));e.count.textContent=`${a.length} ${a.length===1?"lançamento":"lançamentos"}`;e.filteredTotal.textContent=money(total(a));if(!a.length){e.list.innerHTML='<div class="empty">🧾<br><b>Nenhum gasto nesta seleção.</b></div>';return}e.list.innerHTML=a.map(x=>{const[y,m,d]=x.date.split("-"),dt=new Date(+y,+m-1,+d,12),sm=new Intl.DateTimeFormat("pt-BR",{month:"short"}).format(dt).replace(".",""),note=x.note?" • "+esc(x.note):"";return `<article class="expense"><div class="date"><b>${d}</b><small>${sm}</small></div><div class="info"><b>${emoji[x.category]||"✨"} ${esc(x.category)}</b><small>${esc(x.bank)}${note}</small></div><span class="tag ${bankClass(x.bank)}">${esc(x.bank)}</span><span class="value">-${money(x.amount)}</span><button class="trash" data-id="${esc(x.id)}">🗑️</button></article>`}).join("")}
+function preview(){const a=parseMoney(e.amount.value),p=[];if(cat)p.push((emoji[cat]||"✨")+" "+cat);if(bank)p.push(bank);if(a)p.push(money(a));e.preview.textContent=p.length?p.join(" • "):"Selecione categoria, forma de pagamento e valor."}
+function choose(box,btn,type){box.querySelectorAll("button").forEach(b=>b.classList.remove("selected"));btn.classList.add("selected");type==="cat"?cat=btn.dataset.category:bank=btn.dataset.bank;preview()}
+function add(){const a=parseMoney(e.amount.value);if(!cat)return toast("Escolha uma categoria.");if(!bank)return toast("Escolha como pagou.");if(a<=0)return toast("Digite um valor maior que zero.");const date=month===monthKey(new Date())?todayIso():month+"-01";ensure().expenses.push({id:crypto.randomUUID?crypto.randomUUID():Date.now()+"",category:cat,bank,amount:+a.toFixed(2),date,note:e.note.value.trim(),createdAt:new Date().toISOString()});save();reset();render();toast("Gasto adicionado: "+money(a))}
+function reset(){cat=bank="";e.amount.value=e.note.value="";e.note.classList.add("hidden");e.noteToggle.textContent="+ Adicionar observação";document.querySelectorAll(".chips button").forEach(b=>b.classList.remove("selected"))}
+function change(n){const d=monthDate(month);d.setMonth(d.getMonth()+n);month=monthKey(d);filter="Todos";syncFilters();render()}
+function syncFilters(){e.filters.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.filter===filter))}
+function salaryOpen(){e.salaryMonth.textContent="Defina a renda disponível para "+monthName(month)+".";const v=ensure().salary;e.salaryInput.value=v?v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):"";e.salaryDialog.showModal()}
+function toast(msg){e.toast.textContent=msg;e.toast.classList.add("show");clearTimeout(timer);timer=setTimeout(()=>e.toast.classList.remove("show"),2200)}
+function csv(){const a=ensure().expenses;if(!a.length)return toast("Não há gastos para exportar.");const rows=[["Data","Categoria","Banco","Valor","Observação"],...a.map(x=>[x.date.split("-").reverse().join("/"),x.category,x.bank,x.amount.toFixed(2).replace(".",","),x.note||""])];const s="\uFEFF"+rows.map(r=>r.map(v=>`\"${String(v).replace(/\"/g,'\"\"')}\"`).join(";")).join("\n"),url=URL.createObjectURL(new Blob([s],{type:"text/csv;charset=utf-8"})),aTag=document.createElement("a");aTag.href=url;aTag.download="gastos-"+month+".csv";aTag.click();URL.revokeObjectURL(url)}
+e.prev.onclick=()=>change(-1);e.next.onclick=()=>change(1);e.monthBtn.onclick=()=>e.monthPicker.showPicker?e.monthPicker.showPicker():e.monthPicker.click();e.monthPicker.onchange=()=>{if(e.monthPicker.value){month=e.monthPicker.value;filter="Todos";syncFilters();render()}};
+e.categories.onclick=x=>{const b=x.target.closest("[data-category]");if(b)choose(e.categories,b,"cat")};e.banks.onclick=x=>{const b=x.target.closest("[data-bank]");if(b)choose(e.banks,b,"bank")};e.amount.oninput=()=>{e.amount.value=mask(e.amount.value);preview()};e.add.onclick=add;e.noteToggle.onclick=()=>{e.note.classList.toggle("hidden");e.noteToggle.textContent=e.note.classList.contains("hidden")?"+ Adicionar observação":"− Ocultar observação"};
+e.salaryEdit.onclick=salaryOpen;e.salaryClose.onclick=e.salaryCancel.onclick=()=>e.salaryDialog.close();e.salaryInput.oninput=()=>e.salaryInput.value=mask(e.salaryInput.value);e.salaryForm.onsubmit=x=>{x.preventDefault();ensure().salary=+parseMoney(e.salaryInput.value).toFixed(2);save();e.salaryDialog.close();render();toast("Salário atualizado.")};
+e.filters.onclick=x=>{const b=x.target.closest("[data-filter]");if(b){filter=b.dataset.filter;syncFilters();renderList()}};e.list.onclick=x=>{const b=x.target.closest("[data-id]");if(b){pending=b.dataset.id;e.deleteDialog.showModal()}};e.deleteCancel.onclick=()=>{pending=null;e.deleteDialog.close()};e.deleteConfirm.onclick=()=>{ensure().expenses=ensure().expenses.filter(x=>x.id!==pending);pending=null;save();e.deleteDialog.close();render();toast("Gasto excluído.")};e.export.onclick=csv;
+e.theme.onclick=()=>{document.body.classList.toggle("dark");const d=document.body.classList.contains("dark");localStorage.setItem(TK,d?"dark":"light");e.theme.textContent=d?"🌙":"☀️"};if(localStorage.getItem(TK)==="dark"){document.body.classList.add("dark");e.theme.textContent="🌙"}render();
+})();
