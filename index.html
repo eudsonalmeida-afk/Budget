@@ -4,6 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#ff7fa3">
+  <meta name="application-name" content="Contaê">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Contaê">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <title>Contaê</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -114,4 +120,13 @@
 <dialog id="deleteDialog"><div class="dialog-icon">🗑️</div><h2 id="deleteTitle">Excluir este gasto?</h2><p id="deleteMessage">O valor voltará ao saldo do mês.</p><div class="actions"><button id="deleteCancel" class="secondary">Cancelar</button><button id="deleteConfirm" class="danger">Excluir</button></div></dialog>
 <div id="toast"></div>
 <script type="module" src="script.js"></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch(error => {
+        console.error("Falha ao registrar o Service Worker:", error);
+      });
+    });
+  }
+</script>
 </body></html>
