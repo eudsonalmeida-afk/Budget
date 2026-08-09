@@ -2,6 +2,14 @@
 
 Aplicativo de controle financeiro pessoal com gastos, salários, cartões e compras parceladas. Esta versão pode ser instalada no computador ou celular e abre em janela própria, sem a barra comum do navegador.
 
+## Recursos desta versão
+
+- preenchimento automático da data do gasto conforme a data corrente do celular ou computador;
+- exibição da data na lista mensal;
+- edição de data, categoria, forma de pagamento, valor e observação de gastos avulsos;
+- edição de nome, categoria, forma de pagamento, valor da parcela, quantidade de parcelas, mês inicial e observação de compras parceladas;
+- sincronização das alterações com o Supabase.
+
 ## Arquivos
 
 ```text
