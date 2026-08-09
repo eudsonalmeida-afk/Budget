@@ -5,6 +5,7 @@ Aplicativo de controle financeiro pessoal com gastos, salários, cartões e comp
 ## Recursos desta versão
 
 - preenchimento automático da data do gasto conforme a data corrente do celular ou computador;
+- separação entre a data da compra e o mês da fatura: o lançamento permanece no mês que está sendo visualizado;
 - exibição da data na lista mensal;
 - edição de data, categoria, forma de pagamento, valor e observação de gastos avulsos;
 - edição de nome, categoria, forma de pagamento, valor da parcela, quantidade de parcelas, mês inicial e observação de compras parceladas;
