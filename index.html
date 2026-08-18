@@ -4,12 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#ff7fa3">
-  <meta name="application-name" content="Contaê">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Contaê">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <title>Contaê</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -20,8 +14,8 @@
     <h1 id="authTitle">Acessar o Contaê</h1>
     <p id="authDescription">Seus gastos e salários sincronizados onde você estiver.</p>
     <form id="authForm">
-      <label><span>E-mail</span><input id="authEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" required placeholder="seuemail@exemplo.com"></label>
-      <label><span>Senha</span><input id="authPassword" type="password" autocomplete="current-password" autocapitalize="none" enterkeyhint="go" minlength="6" required placeholder="Mínimo de 6 caracteres"></label>
+      <label><span>E-mail</span><input id="authEmail" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com"></label>
+      <label><span>Senha</span><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres"></label>
       <button id="authSubmit" class="primary auth-submit" type="submit">Entrar</button>
     </form>
     <button id="authModeToggle" class="link auth-toggle" type="button">Ainda não tenho conta</button>
@@ -73,8 +67,9 @@
 
         <div id="installmentDetails" class="installment-details hidden">
           <label><span>Nome da compra</span><input id="purchaseName" maxlength="70" placeholder="Ex.: notebook, tênis, passagem"></label>
+          <label><span>Data da compra</span><input id="purchaseDate" type="date"></label>
           <label><span>Quantidade de parcelas</span><input id="installmentCount" type="number" min="2" max="120" inputmode="numeric" placeholder="Ex.: 10"></label>
-          <label><span>Primeira parcela</span><input id="installmentStart" type="month"></label>
+          <label><span>Primeira parcela</span><input id="installmentStart" type="date"></label>
         </div>
 
         <div class="step"><h3><i>1</i> O que foi?</h3><div id="categories" class="chips">
@@ -86,7 +81,6 @@
         </div></div>
 
         <div class="step"><h3><i>3</i> <span id="amountQuestion">Quanto foi?</span></h3>
-          <label id="expenseDateField" class="date-field"><span>Data do gasto</span><input id="expenseDate" type="date"></label>
           <div class="amount"><label><span>R$</span><input id="amount" inputmode="decimal" placeholder="0,00"></label><button id="add" class="primary" type="button">Adicionar gasto ＋</button></div>
           <small id="amountHelp" class="field-help">Informe o valor total deste gasto.</small>
           <button id="noteToggle" class="link" type="button">+ Adicionar observação</button><input id="note" class="note hidden" maxlength="80" placeholder="Observação opcional">
@@ -111,41 +105,45 @@
       <section class="panel">
         <div class="title"><div><small>GASTOS DO MÊS</small><h2>Lista de lançamentos</h2></div><button id="export" class="secondary" type="button">Exportar CSV</button></div>
         <div id="filters" class="filters"><button class="active" data-filter="Todos">Todos</button><button class="picpay" data-filter="PicPay">PicPay</button><button class="inter" data-filter="Inter">Inter</button><button class="bradesco" data-filter="Bradesco">Bradesco</button><button class="bb" data-filter="Banco do Brasil">Banco do Brasil</button><button class="itau" data-filter="Itaú">Itaú</button><button class="cash" data-filter="Dinheiro / Débito">Débito</button></div>
-        <div class="list-head"><span id="count"></span><strong id="filteredTotal"></strong></div><div id="list" class="list"></div>
+        <div class="list-head"><span id="count"></span><strong id="filteredTotal"></strong></div>
+        <div id="list" class="list"></div>
+        <details id="installmentDropdown" class="installment-dropdown">
+          <summary><span>Parcelamentos</span><strong id="installmentDropdownMeta">0 • R$ 0,00</strong></summary>
+          <div id="installmentEntries" class="list installment-dropdown-list"></div>
+        </details>
       </section>
     </section>
   </main>
 </div>
 
 <dialog id="salaryDialog"><form id="salaryForm"><button type="button" id="salaryClose" class="close">×</button><div class="dialog-icon">💰</div><h2>Salário do mês</h2><p id="salaryMonth"></p><label class="money"><span>R$</span><input id="salaryInput" inputmode="decimal" placeholder="0,00"></label><div class="actions"><button type="button" id="salaryCancel" class="secondary">Cancelar</button><button class="primary">Salvar</button></div></form></dialog>
-<dialog id="editDialog" class="edit-dialog">
-  <form id="editForm">
-    <button type="button" id="editClose" class="close">×</button>
-    <div class="dialog-icon">✏️</div>
-    <h2 id="editTitle">Editar gasto</h2>
-    <div class="edit-fields">
-      <label id="editNameField" class="hidden"><span>Nome da compra</span><input id="editName" maxlength="70"></label>
-      <label id="editDateField"><span>Data do gasto</span><input id="editDate" type="date"></label>
-      <label><span>Categoria</span><select id="editCategory" required></select></label>
-      <label><span>Forma de pagamento</span><select id="editBank" required></select></label>
-      <label><span id="editAmountLabel">Valor</span><input id="editAmount" inputmode="decimal" required></label>
-      <label id="editCountField" class="hidden"><span>Quantidade de parcelas</span><input id="editCount" type="number" min="2" max="120" inputmode="numeric"></label>
-      <label id="editStartField" class="hidden"><span>Primeira parcela</span><input id="editStart" type="month"></label>
-      <label><span>Observação</span><input id="editNote" maxlength="80"></label>
+<dialog id="editInstallmentDialog" class="edit-installment-dialog">
+  <form id="editInstallmentForm">
+    <button type="button" id="editInstallmentClose" class="close">×</button>
+    <div class="dialog-icon">🧾</div>
+    <h2>Editar parcelamento</h2>
+    <p id="editInstallmentMonthText"></p>
+    <div class="edit-installment-grid">
+      <label><span>Nome da compra</span><input id="editInstallmentName" maxlength="70" required></label>
+      <label><span>Data da compra</span><input id="editPurchaseDate" type="date" required></label>
+      <label><span>Valor da parcela</span><input id="editInstallmentAmount" inputmode="decimal" required></label>
+      <label><span>Quantidade de parcelas</span><input id="editInstallmentCount" type="number" min="2" max="120" required></label>
+      <label><span>Primeira parcela</span><input id="editFirstInstallmentDate" type="date" required></label>
+      <label><span>Categoria</span><select id="editInstallmentCategory" required>
+        <option>Alimentação</option><option>Transporte</option><option>Casa</option><option>Lazer</option><option>Saúde</option><option>Compras</option><option>Assinatura</option><option>Reforma do quarto</option><option>Outros</option>
+      </select></label>
+      <label><span>Cartão / forma de pagamento</span><select id="editInstallmentBank" required>
+        <option>PicPay</option><option>Inter</option><option>Bradesco</option><option>Banco do Brasil</option><option>Itaú</option><option>Dinheiro / Débito</option>
+      </select></label>
+      <label class="edit-note"><span>Observação</span><input id="editInstallmentNote" maxlength="80"></label>
     </div>
-    <div class="actions"><button type="button" id="editCancel" class="secondary">Cancelar</button><button id="editSave" class="primary" type="submit">Salvar alterações</button></div>
+    <div id="anticipationBox" class="anticipation-box">
+      <label class="anticipation-check"><input id="editAnticipated" type="checkbox"><span><strong id="anticipationTitle">Antecipar parcela deste mês</strong><small id="anticipationHelp">Ao marcar, esta parcela deixa de ser descontada apenas no mês exibido.</small></span></label>
+    </div>
+    <div class="actions"><button type="button" id="editInstallmentCancel" class="secondary">Cancelar</button><button class="primary">Salvar alterações</button></div>
   </form>
 </dialog>
 <dialog id="deleteDialog"><div class="dialog-icon">🗑️</div><h2 id="deleteTitle">Excluir este gasto?</h2><p id="deleteMessage">O valor voltará ao saldo do mês.</p><div class="actions"><button id="deleteCancel" class="secondary">Cancelar</button><button id="deleteConfirm" class="danger">Excluir</button></div></dialog>
 <div id="toast"></div>
 <script type="module" src="script.js"></script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js").catch(error => {
-        console.error("Falha ao registrar o Service Worker:", error);
-      });
-    });
-  }
-</script>
 </body></html>
