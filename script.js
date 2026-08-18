@@ -97,10 +97,14 @@ async function addEntry(){
     monthData.installments.unshift({id:data.id,name:data.name,category:data.category,bank:data.bank,amount:Number(data.installment_amount),totalInstallments:data.total_installments,startMonth:data.start_month,purchaseDate:data.purchase_date,firstInstallmentDate:data.first_installment_date,note:data.note||"",createdAt:data.created_at});
     resetEntry();switchTab("installments");render();toast("Compra parcelada cadastrada.");
   }else{
-    const date=month===monthKey(new Date())?todayIso():`${month}-01`;
-    const{data,error}=await supabase.from("expenses").insert({user_id:currentUser.id,month,expense_date:date,category,bank,amount:+amount.toFixed(2),note:e.note.value.trim()||null}).select("id,expense_date,category,bank,amount,note,created_at").single();
+    const actualDate=todayIso();
+    const billingMonth=month;
+    const{data,error}=await supabase.from("expenses").insert({user_id:currentUser.id,month:billingMonth,expense_date:actualDate,category,bank,amount:+amount.toFixed(2),note:e.note.value.trim()||null}).select("id,expense_date,category,bank,amount,note,created_at").single();
     e.add.disabled=false;if(error)return toast("Não foi possível salvar este gasto.");
-    monthData.expenses.unshift({id:data.id,date:data.expense_date,category:data.category,bank:data.bank,amount:Number(data.amount),note:data.note||"",createdAt:data.created_at});resetEntry();render();toast(`Gasto salvo: ${money(amount)}`);
+    resetEntry();
+    monthData.expenses.unshift({id:data.id,date:data.expense_date,category:data.category,bank:data.bank,amount:Number(data.amount),note:data.note||"",createdAt:data.created_at});
+    render();
+    toast(`Compra de ${new Intl.DateTimeFormat("pt-BR").format(new Date())} lançada na fatura de ${monthName(billingMonth)}: ${money(amount)}`);
   }
   setSync("Sincronizado","ok");
 }
